@@ -12,10 +12,9 @@
 #include <AzFramework/Physics/Common/PhysicsEvents.h>
 
 #include <AzCore/Component/TickBus.h>
-#include <ROS2/Manipulation/JointsManipulationRequests.h>
-#include <ROS2/Gripper/GripperRequestBus.h>
 #include <ImGuiBus.h>
-
+#include <ROS2/Gripper/GripperRequestBus.h>
+#include <ROS2/Manipulation/JointsManipulationRequests.h>
 
 namespace ROS2
 {
@@ -39,7 +38,6 @@ namespace ROS2
         static void Reflect(AZ::ReflectContext* context);
 
     private:
-
         // GripperRequestBus::Handler overrides...
         AZ::Outcome<void, AZStd::string> GripperCommand(float position, float maxEffort) override;
         AZ::Outcome<void, AZStd::string> CancelGripperCommand() override;
