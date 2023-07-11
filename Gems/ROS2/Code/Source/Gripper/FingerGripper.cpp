@@ -178,7 +178,7 @@ namespace ROS2 {
     }
 
     void FingerGripper::OnTick([[maybe_unused]] float delta, [[maybe_unused]] AZ::ScriptTimePoint timePoint) {
-        // Hacky, can probably be done better
+        // @TODO: Hacky, can probably be done better
         if (!m_initialised) {
             m_initialised = true;
             GetFingerJoints();

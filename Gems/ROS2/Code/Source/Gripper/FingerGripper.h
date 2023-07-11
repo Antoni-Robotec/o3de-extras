@@ -27,7 +27,7 @@ namespace ROS2
         , public AZ::TickBus::Handler
     {
     public:
-        // What should I put in?? I copied from VacuumGripper changing a few chars
+        // @TODO: What should I put in?? I copied from VacuumGripper changing a few chars
         AZ_COMPONENT(FingerGripper, "{b29eb4fa-0f6f-11ef-be56-0242ac120092}", AZ::Component);
         FingerGripper() = default;
         ~FingerGripper() = default;
@@ -70,6 +70,7 @@ namespace ROS2
         float m_maxEffort;
         float m_defaultPosition;
 
+        // @TODO: Should this be an input variable? Maybe just a constant?
         float m_epsilon = 1e-5;
         float m_ImGuiPosition;
     };
