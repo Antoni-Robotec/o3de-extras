@@ -76,7 +76,15 @@ namespace ROS2
 
     void FingerGripper::SetPosition(float position, float maxEffort)
     {
-        float targetPosition = position / m_fingerJoints.size();
+        // A check to make this work with moveit
+        if (maxEffort == 0)
+        {
+            maxEffort = AZStd::numeric_limits<float>::infinity();
+        }
+
+        // This should be different according to the ROS2 interface
+        // However, we need it to be compatible with moveit
+        float targetPosition = position;
         for (auto& [jointName, jointInfo] : m_fingerJoints)
         {
             AZ::Outcome<void, AZStd::string> result;
@@ -132,7 +140,9 @@ namespace ROS2
             gripperPosition += position;
         }
 
-        return gripperPosition;
+        // This should be different according to the ROS2 interface
+        // However, we need it to work with moveit
+        return gripperPosition / m_fingerJoints.size();
     }
 
     float FingerGripper::GetGripperEffort() const
