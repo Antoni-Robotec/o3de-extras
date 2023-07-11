@@ -79,11 +79,14 @@ namespace ROS2
         auto feedback = std::make_shared<GripperCommand::Feedback>();
         float position = 0.0;
         float effort = 0.0;
+        bool isStalling = false;
         GripperRequestBus::EventResult(position, GetEntityId(), &GripperRequestBus::Events::GetGripperPosition);
         GripperRequestBus::EventResult(effort, GetEntityId(), &GripperRequestBus::Events::GetGripperEffort);
+        GripperRequestBus::EventResult(isStalling, GetEntityId(), &GripperRequestBus::Events::IsGripperNotMoving);
         feedback->position = position;
         feedback->position = effort;
         feedback->reached_goal = false;
+        feedback->stalled = isStalling;
         return feedback;
     }
 
