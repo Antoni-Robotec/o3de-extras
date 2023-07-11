@@ -52,7 +52,7 @@ namespace ROS2 {
                     ->Attribute(AZ::Edit::Attributes::AppearsInAddComponentMenu, AZ_CRC("Game"))
                     ->Attribute(AZ::Edit::Attributes::Category, "ROS2")
                     ->DataElement(
-                        AZ::Edit::UIHandlers::EntityId,
+                        AZ::Edit::UIHandlers::Default,
                         &FingerGripper::m_epsilon,
                         "Epsilon",
                         "A small value for feedback purposes (how slow the gripper has to move to be stalling, how close to the goal to have reached it).");
