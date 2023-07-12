@@ -24,19 +24,16 @@ namespace ROS2
         m_grippingInProgress = false;
         m_initialised = false;
         m_ImGuiPosition = 0;
+        m_stallingFor = 0;
         AZ::TickBus::Handler::BusConnect();
         ImGui::ImGuiUpdateListenerBus::Handler::BusConnect();
         GripperRequestBus::Handler::BusConnect(GetEntityId());
     }
     void FingerGripper::Deactivate()
     {
-        if (!m_initialised)
-        {
-            AZ::TickBus::Handler::BusDisconnect();
-        }
+        AZ::TickBus::Handler::BusDisconnect();
         ImGui::ImGuiUpdateListenerBus::Handler::BusDisconnect();
         GripperRequestBus::Handler::BusDisconnect(GetEntityId());
-        m_initialised = true;
     }
 
     void FingerGripper::Reflect(AZ::ReflectContext* context)
@@ -69,10 +66,6 @@ namespace ROS2
         }
         return m_fingerJoints;
     }
-    float FingerGripper::GetDefaultPosition()
-    {
-        return m_defaultPosition = GetGripperPosition();
-    }
 
     void FingerGripper::SetPosition(float position, float maxEffort)
     {
@@ -82,8 +75,6 @@ namespace ROS2
             maxEffort = AZStd::numeric_limits<float>::infinity();
         }
 
-        // This should be different according to the ROS2 interface
-        // However, we need it to be compatible with moveit
         float targetPosition = position;
         for (auto& [jointName, jointInfo] : m_fingerJoints)
         {
@@ -114,6 +105,7 @@ namespace ROS2
         m_grippingInProgress = true;
         m_desiredPosition = position;
         m_maxEffort = maxEffort;
+        m_stallingFor = 0;
 
         SetPosition(position, maxEffort);
 
@@ -123,7 +115,7 @@ namespace ROS2
     AZ::Outcome<void, AZStd::string> FingerGripper::CancelGripperCommand()
     {
         m_grippingInProgress = false;
-        SetPosition(m_defaultPosition, AZStd::numeric_limits<float>::infinity());
+        SetPosition(0, 0);
         return AZ::Success();
     }
 
@@ -140,8 +132,6 @@ namespace ROS2
             gripperPosition += position;
         }
 
-        // This should be different according to the ROS2 interface
-        // However, we need it to work with moveit
         return gripperPosition / m_fingerJoints.size();
     }
 
@@ -161,7 +151,7 @@ namespace ROS2
         return gripperEffort;
     }
 
-    bool FingerGripper::IsGripperNotMoving() const
+    bool FingerGripper::IsGripperVelocity0() const
     {
         AZ::Outcome<JointsManipulationRequests::JointsVelocitiesMap, AZStd::string> result;
         JointsManipulationRequestBus::EventResult(result, GetEntityId(), &JointsManipulationRequests::GetAllJointsVelocities);
@@ -176,6 +166,11 @@ namespace ROS2
             }
         }
         return true;
+    }
+
+    bool FingerGripper::IsGripperNotMoving() const
+    {
+        return m_stallingFor > 1;
     }
 
     bool FingerGripper::HasGripperReachedGoal() const
@@ -204,9 +199,14 @@ namespace ROS2
         {
             m_initialised = true;
             GetFingerJoints();
-            GetDefaultPosition();
-            SetPosition(m_defaultPosition, AZStd::numeric_limits<float>::infinity());
-            AZ::TickBus::Handler::BusDisconnect();
+            SetPosition(0, 0);
+        }
+
+        if (IsGripperVelocity0()) {
+            m_stallingFor += delta;
+        }
+        else {
+            m_stallingFor = 0;
         }
     }
 } // namespace ROS2

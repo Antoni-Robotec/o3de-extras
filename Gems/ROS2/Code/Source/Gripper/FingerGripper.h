@@ -59,6 +59,7 @@ namespace ROS2
         ManipulationJoints& GetFingerJoints();
         float GetDefaultPosition();
         void SetPosition(float position, float maxEffort);
+        bool IsGripperVelocity0() const;
         void PublishFeedback() const;
 
         ManipulationJoints m_fingerJoints;
@@ -66,10 +67,10 @@ namespace ROS2
         bool m_initialised;
         float m_desiredPosition;
         float m_maxEffort;
-        float m_defaultPosition;
+        float m_stallingFor;
 
         // @TODO: Should this be an input variable? Maybe just a constant?
-        float m_epsilon = 1e-5;
+        float m_epsilon = 0.1f;
         float m_ImGuiPosition;
     };
 } // namespace ROS2
