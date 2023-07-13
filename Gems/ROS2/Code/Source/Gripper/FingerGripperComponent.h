@@ -10,7 +10,6 @@
 
 #include <AzCore/Component/Component.h>
 #include <AzFramework/Physics/Common/PhysicsEvents.h>
-
 #include <AzCore/Component/TickBus.h>
 #include <ImGuiBus.h>
 #include <ROS2/Gripper/GripperRequestBus.h>
@@ -19,7 +18,7 @@
 namespace ROS2
 {
     //! This component implements finger gripper functionality.
-    class FingerGripper
+    class FingerGripperComponent
         : public AZ::Component
         , public GripperRequestBus::Handler
         , public ImGui::ImGuiUpdateListenerBus::Handler
@@ -27,9 +26,11 @@ namespace ROS2
     {
     public:
         // @TODO: What should I put in?? I copied from VacuumGripper changing a few chars
-        AZ_COMPONENT(FingerGripper, "{b29eb4fa-0f6f-11ef-be56-0242ac120092}", AZ::Component);
-        FingerGripper() = default;
-        ~FingerGripper() = default;
+        AZ_COMPONENT(FingerGripperComponent, "{b29eb4fa-0f6f-11ef-be56-0242ac120092}", AZ::Component);
+        FingerGripperComponent() = default;
+        ~FingerGripperComponent() = default;
+
+        static void GetRequiredServices(AZ::ComponentDescriptor::DependencyArrayType& required);
 
         // AZ::Component overrides...
         void Activate() override;

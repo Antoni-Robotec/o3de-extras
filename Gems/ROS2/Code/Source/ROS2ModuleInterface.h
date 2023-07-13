@@ -14,7 +14,7 @@
 #include <GNSS/ROS2GNSSSensorComponent.h>
 #include <Gripper/GripperActionServerComponent.h>
 #include <Gripper/VacuumGripperComponent.h>
-#include <Gripper/FingerGripper.h>
+#include <Gripper/FingerGripperComponent.h>
 #include <Imu/ROS2ImuSensorComponent.h>
 #include <Lidar/LidarRegistrarSystemComponent.h>
 #include <Lidar/ROS2Lidar2DSensorComponent.h>
@@ -91,7 +91,7 @@ namespace ROS2
                     ROS2ProximitySensor::CreateDescriptor(),
                     GripperActionServerComponent::CreateDescriptor(),
                     VacuumGripperComponent::CreateDescriptor(),
-                    FingerGripper::CreateDescriptor(),
+                    FingerGripperComponent::CreateDescriptor(),
                 });
         }
 

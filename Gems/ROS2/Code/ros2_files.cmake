@@ -36,8 +36,8 @@ set(FILES
         Source/Gripper/GripperActionServerComponent.h
         Source/Gripper/VacuumGripperComponent.h
         Source/Gripper/VacuumGripperComponent.cpp
-        Source/Gripper/FingerGripper.h
-        Source/Gripper/FingerGripper.cpp
+        Source/Gripper/FingerGripperComponent.h
+        Source/Gripper/FingerGripperComponent.cpp
         Source/GNSS/GNSSFormatConversions.cpp
         Source/GNSS/GNSSFormatConversions.h
         Source/GNSS/ROS2GNSSSensorComponent.cpp
