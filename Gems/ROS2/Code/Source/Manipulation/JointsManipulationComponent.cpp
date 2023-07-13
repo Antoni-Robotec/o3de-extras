@@ -332,8 +332,8 @@ namespace ROS2
                 AZ::TickBus::Handler::BusDisconnect();
                 return;
             }
+            m_jointStatePublisher->Activate();
         }
-        m_jointStatePublisher->OnTick(deltaTime);
         MoveToSetPositions(deltaTime);
     }
 } // namespace ROS2

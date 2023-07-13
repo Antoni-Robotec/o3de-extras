@@ -53,8 +53,16 @@ namespace ROS2
         m_jointStatePublisher->publish(m_jointStateMsg);
     }
 
-    void JointStatePublisher::OnTick(float deltaTime)
+    void JointStatePublisher::Activate() {
+        m_activated = true;
+    }
+
+    void JointStatePublisher::OnPhysicsSimulationFinished([[maybe_unused]] AzPhysics::SceneHandle sceneHandle, float deltaTime)
     {
+        if (!m_activated) {
+            return;
+        }
+
         AZ_Assert(m_configuration.m_frequency > 0.f, "JointPublisher frequency must be greater than zero");
         auto frameTime = 1.f / m_configuration.m_frequency;
 
