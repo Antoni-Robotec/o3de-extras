@@ -23,6 +23,7 @@ namespace ROS2
     {
         m_grippingInProgress = false;
         m_initialised = false;
+        m_cancelled = false;
         m_ImGuiPosition = 0.0f;
         m_stallingFor = 0.0f;
         AZ::TickBus::Handler::BusConnect();
@@ -111,6 +112,7 @@ namespace ROS2
         m_desiredPosition = position;
         m_maxEffort = maxEffort;
         m_stallingFor = 0.0f;
+        m_cancelled = false;
 
         SetPosition(position, maxEffort);
 
@@ -120,8 +122,13 @@ namespace ROS2
     AZ::Outcome<void, AZStd::string> FingerGripperComponent::CancelGripperCommand()
     {
         m_grippingInProgress = false;
+        m_cancelled = true;
         SetPosition(0.0f, 0.0f);
         return AZ::Success();
+    }
+
+    bool FingerGripperComponent::HasGripperCommandBeenCancelled() const {
+        return m_cancelled;
     }
 
     float FingerGripperComponent::GetGripperPosition() const

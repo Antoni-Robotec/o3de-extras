@@ -42,6 +42,7 @@ namespace ROS2
         // GripperRequestBus::Handler overrides...
         AZ::Outcome<void, AZStd::string> GripperCommand(float position, float maxEffort) override;
         AZ::Outcome<void, AZStd::string> CancelGripperCommand() override;
+        bool HasGripperCommandBeenCancelled() const override;
         // Sum of all joint positions
         float GetGripperPosition() const override;
         // Sum of all efforts exerted by fingers
@@ -65,6 +66,7 @@ namespace ROS2
 
         ManipulationJoints m_fingerJoints;
         bool m_grippingInProgress;
+        bool m_cancelled;
         bool m_initialised;
         float m_desiredPosition;
         float m_maxEffort;
