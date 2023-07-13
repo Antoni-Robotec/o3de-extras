@@ -41,20 +41,34 @@ namespace ROS2
         for (const auto& [jointName, jointInfo] : manipulatorJoints)
         {
             AZ::Outcome<float, AZStd::string> result;
-            JointsManipulationRequestBus::EventResult(result, m_context.m_entityId, &JointsManipulationRequests::GetJointPosition, jointName);
+            JointsManipulationRequestBus::EventResult(
+                result, m_context.m_entityId, &JointsManipulationRequests::GetJointPosition, jointName);
             auto currentJointPosition = result.GetValue();
+            JointsManipulationRequestBus::EventResult(
+                result, m_context.m_entityId, &JointsManipulationRequests::GetJointVelocity, jointName);
+            auto currentJointVelocity = result.GetValue();
+            JointsManipulationRequestBus::EventResult(result, m_context.m_entityId, &JointsManipulationRequests::GetJointEffort, jointName);
+            auto currentJointEffort = result.GetValue();
 
             m_jointStateMsg.name[i] = jointName.c_str();
             m_jointStateMsg.position[i] = currentJointPosition;
-            m_jointStateMsg.velocity[i] = 0.0;
-            m_jointStateMsg.effort[i] = 0.0;
+            m_jointStateMsg.velocity[i] = currentJointVelocity;
+            m_jointStateMsg.effort[i] = currentJointEffort;
             i++;
         }
         m_jointStatePublisher->publish(m_jointStateMsg);
     }
 
-    void JointStatePublisher::OnTick(float deltaTime)
+    void JointStatePublisher::Activate() {
+        m_activated = true;
+    }
+
+    void JointStatePublisher::OnPhysicsSimulationFinished([[maybe_unused]] AzPhysics::SceneHandle sceneHandle, float deltaTime)
     {
+        if (!m_activated) {
+            return;
+        }
+
         AZ_Assert(m_configuration.m_frequency > 0.f, "JointPublisher frequency must be greater than zero");
         auto frameTime = 1.f / m_configuration.m_frequency;
 
