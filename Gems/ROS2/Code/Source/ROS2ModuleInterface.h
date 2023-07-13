@@ -12,8 +12,8 @@
 #include <AzCore/Module/Module.h>
 #include <Camera/ROS2CameraSensorComponent.h>
 #include <GNSS/ROS2GNSSSensorComponent.h>
-#include <Gripper/GripperActionServer.h>
-#include <Gripper/VacuumGripper.h>
+#include <Gripper/GripperActionServerComponent.h>
+#include <Gripper/VacuumGripperComponent.h>
 #include <Gripper/FingerGripper.h>
 #include <Imu/ROS2ImuSensorComponent.h>
 #include <Lidar/LidarRegistrarSystemComponent.h>
@@ -89,8 +89,8 @@ namespace ROS2
                     JointsTrajectoryComponent::CreateDescriptor(),
                     PidMotorControllerComponent::CreateDescriptor(),
                     ROS2ProximitySensor::CreateDescriptor(),
-                    GripperActionServer::CreateDescriptor(),
-                    VacuumGripper::CreateDescriptor(),
+                    GripperActionServerComponent::CreateDescriptor(),
+                    VacuumGripperComponent::CreateDescriptor(),
                     FingerGripper::CreateDescriptor(),
                 });
         }

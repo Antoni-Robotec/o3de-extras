@@ -32,8 +32,10 @@ set(FILES
         Source/Frame/ROS2Transform.cpp
         Source/Gripper/GripperActionServer.cpp
         Source/Gripper/GripperActionServer.h
-        Source/Gripper/VacuumGripper.h
-        Source/Gripper/VacuumGripper.cpp
+        Source/Gripper/GripperActionServerComponent.cpp
+        Source/Gripper/GripperActionServerComponent.h
+        Source/Gripper/VacuumGripperComponent.h
+        Source/Gripper/VacuumGripperComponent.cpp
         Source/Gripper/FingerGripper.h
         Source/Gripper/FingerGripper.cpp
         Source/GNSS/GNSSFormatConversions.cpp
