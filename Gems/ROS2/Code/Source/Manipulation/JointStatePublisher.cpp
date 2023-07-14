@@ -41,7 +41,8 @@ namespace ROS2
         for (const auto& [jointName, jointInfo] : manipulatorJoints)
         {
             AZ::Outcome<float, AZStd::string> result;
-            JointsManipulationRequestBus::EventResult(result, m_context.m_entityId, &JointsManipulationRequests::GetJointPosition, jointName);
+            JointsManipulationRequestBus::EventResult(
+                result, m_context.m_entityId, &JointsManipulationRequests::GetJointPosition, jointName);
             auto currentJointPosition = result.GetValue();
 
             m_jointStateMsg.name[i] = jointName.c_str();
@@ -53,7 +54,8 @@ namespace ROS2
         m_jointStatePublisher->publish(m_jointStateMsg);
     }
 
-    void JointStatePublisher::Activate() {
+    void JointStatePublisher::Activate()
+    {
         m_onSceneSimulationEvent = AzPhysics::SceneEvents::OnSceneSimulationFinishHandler(
             [this]([[maybe_unused]] AzPhysics::SceneHandle sceneHandle, float deltaTime)
             {
