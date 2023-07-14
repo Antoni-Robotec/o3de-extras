@@ -10,6 +10,8 @@
 
 #include <AzCore/Component/EntityId.h>
 #include <ROS2/Communication/PublisherConfiguration.h>
+#include <AzFramework/Physics/Common/PhysicsEvents.h>
+#include <AzFramework/Physics/PhysicsSystem.h>
 #include <rclcpp/publisher.hpp>
 #include <sensor_msgs/msg/joint_state.hpp>
 
