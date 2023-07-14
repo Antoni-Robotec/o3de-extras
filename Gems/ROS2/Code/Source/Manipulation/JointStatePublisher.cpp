@@ -54,15 +54,19 @@ namespace ROS2
     }
 
     void JointStatePublisher::Activate() {
-        m_activated = true;
+        m_onSceneSimulationEvent = AzPhysics::SceneEvents::OnSceneSimulationFinishHandler(
+            [this]([[maybe_unused]] AzPhysics::SceneHandle sceneHandle, float deltaTime)
+            {
+                OnPhysicsSimulationFinished(deltaTime);
+            });
+
+        auto* sceneInterface = AZ::Interface<AzPhysics::SceneInterface>::Get();
+        AzPhysics::SceneHandle sceneHandle = sceneInterface->GetSceneHandle(AzPhysics::DefaultPhysicsSceneName);
+        sceneInterface->RegisterSceneSimulationFinishHandler(sceneHandle, m_onSceneSimulationEvent);
     }
 
-    void JointStatePublisher::OnPhysicsSimulationFinished([[maybe_unused]] AzPhysics::SceneHandle sceneHandle, float deltaTime)
+    void JointStatePublisher::OnPhysicsSimulationFinished(float deltaTime)
     {
-        if (!m_activated) {
-            return;
-        }
-
         AZ_Assert(m_configuration.m_frequency > 0.f, "JointPublisher frequency must be greater than zero");
         auto frameTime = 1.f / m_configuration.m_frequency;
 

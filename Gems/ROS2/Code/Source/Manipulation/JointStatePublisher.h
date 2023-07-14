@@ -26,7 +26,6 @@ namespace ROS2
     //! A class responsible for publishing the joint positions on ROS2 /joint_states topic.
     //!< @see <a href="https://docs.ros2.org/latest/api/sensor_msgs/msg/JointState.html">jointState message</a>.
     class JointStatePublisher
-            : public ROS2::Utils::PhysicsCallbackHandler
     {
     public:
         JointStatePublisher(const PublisherConfiguration& configuration, const JointStatePublisherContext& context);
@@ -34,14 +33,12 @@ namespace ROS2
 
         void Activate();
     private:
-        // ROS2::Utils::PhysicsCallbackHandler overrides ...
-        void OnPhysicsSimulationFinished(AzPhysics::SceneHandle sceneHandle, float deltaTime) override;
-
+        void OnPhysicsSimulationFinished(float deltaTime);
         void PublishMessage();
 
         PublisherConfiguration m_configuration;
         JointStatePublisherContext m_context;
-        bool m_activated = false;
+        AzPhysics::SceneEvents::OnSceneSimulationFinishHandler m_onSceneSimulationEvent;
 
         std::shared_ptr<rclcpp::Publisher<sensor_msgs::msg::JointState>> m_jointStatePublisher;
         sensor_msgs::msg::JointState m_jointStateMsg;
