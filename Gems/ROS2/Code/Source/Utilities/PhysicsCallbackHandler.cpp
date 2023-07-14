@@ -11,30 +11,18 @@
 
 namespace ROS2::Utils
 {
-    void PhysicsCallbackHandler::InstallPhysicalCallback(AZ::EntityId entityId)
+    void PhysicsCallbackHandler::InstallPhysicalCallback()
     {
-        m_bodyHandle = AzPhysics::InvalidSimulatedBodyHandle;
         m_onSceneSimulationStart = AzPhysics::SceneEvents::OnSceneSimulationStartHandler(
-            [this, entityId](AzPhysics::SceneHandle sceneHandle, float deltaTime)
+            [this](AzPhysics::SceneHandle sceneHandle, float deltaTime)
             {
-                AzPhysics::RigidBody* rigidBody = nullptr;
-                Physics::RigidBodyRequestBus::EventResult(rigidBody, entityId, &Physics::RigidBodyRequests::GetRigidBody);
-                AZ_Assert(rigidBody, "Entity %s does not have rigid body.", entityId.ToString().c_str());
-                if (rigidBody)
-                {
-                    m_bodyHandle = rigidBody->m_bodyHandle;
-                    OnPhysicsInitialization(sceneHandle);
-                    m_onSceneSimulationStart.Disconnect();
-                }
+                OnPhysicsInitialization(sceneHandle);
+                m_onSceneSimulationStart.Disconnect();
             });
 
         m_onSceneSimulationEvent = AzPhysics::SceneEvents::OnSceneSimulationFinishHandler(
             [this](AzPhysics::SceneHandle sceneHandle, float deltaTime)
             {
-                if (m_bodyHandle == AzPhysics::InvalidSimulatedBodyHandle)
-                {
-                    return;
-                }
                 OnPhysicsSimulationFinished(sceneHandle, deltaTime);
             });
 

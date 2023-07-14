@@ -46,6 +46,9 @@ namespace ROS2
         nav_msgs::msg::Odometry m_odometryMsg;
         AZ::Transform m_initialTransform;
 
+        // Handle to the simulated physical body
+        AzPhysics::SimulatedBodyHandle m_bodyHandle = AzPhysics::InvalidSimulatedBodyHandle;
+
     private:
         // ROS2SensorComponent overrides ...
         void SetupRefreshLoop() override;

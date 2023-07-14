@@ -75,5 +75,8 @@ namespace ROS2
         void OnPhysicsSimulationFinished(AzPhysics::SceneHandle sceneHandle, float deltaTime) override;
 
         AZ::Matrix3x3 ToDiagonalCovarianceMatrix(const AZ::Vector3& variance);
+
+        // Handle to the simulated physical body
+        AzPhysics::SimulatedBodyHandle m_bodyHandle = AzPhysics::InvalidSimulatedBodyHandle;
     };
 } // namespace ROS2

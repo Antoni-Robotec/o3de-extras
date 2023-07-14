@@ -102,7 +102,15 @@ namespace ROS2
 
     void ROS2ImuSensorComponent::SetupRefreshLoop()
     {
-        InstallPhysicalCallback(m_entity->GetId());
+        auto entityId = m_entity->GetId();
+        AzPhysics::RigidBody* rigidBody = nullptr;
+        Physics::RigidBodyRequestBus::EventResult(rigidBody, entityId, &Physics::RigidBodyRequests::GetRigidBody);
+        AZ_Assert(rigidBody, "Entity %s does not have rigid body.", entityId.ToString().c_str());
+        if (rigidBody)
+        {
+            m_bodyHandle = rigidBody->m_bodyHandle;
+            InstallPhysicalCallback();
+        }
     }
 
     void ROS2ImuSensorComponent::OnPhysicsSimulationFinished(AzPhysics::SceneHandle sceneHandle, float deltaTime)

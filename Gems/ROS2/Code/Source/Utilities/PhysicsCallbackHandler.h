@@ -17,10 +17,8 @@ namespace ROS2::Utils
     class PhysicsCallbackHandler
     {
     protected:
-        //! Install to default physics scene callbacks, when the scene is created, the @member m_bodyHandle is populated with the handle to
-        //! simulated body.
-        //! @param m_entityId Entity id to get m_bodyHandle to.
-        void InstallPhysicalCallback(AZ::EntityId m_entityId);
+        //! Install to default physics scene callbacks.
+        void InstallPhysicalCallback();
 
         //! Removes all attached callbacks
         void RemovePhysicalCallback();
@@ -35,9 +33,6 @@ namespace ROS2::Utils
         //! inner loop of physics engine.
         //! @param sceneHandle - scene handle, only handle to Default Scene is expected
         virtual void OnPhysicsInitialization(AzPhysics::SceneHandle sceneHandle) {};
-
-        //! Handler to simulated physical body
-        AzPhysics::SimulatedBodyHandle m_bodyHandle = AzPhysics::InvalidSimulatedBodyHandle;
     private:
         AzPhysics::SceneEvents::OnSceneSimulationFinishHandler m_onSceneSimulationEvent;
         AzPhysics::SceneEvents::OnSceneSimulationStartHandler m_onSceneSimulationStart;
