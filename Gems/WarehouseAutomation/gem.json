@@ -1,0 +1,26 @@
+{
+    "gem_name": "WarehouseAutomation",
+    "display_name": "WarehouseAutomation",
+    "license": "Apache-2.0",
+    "license_url": "https://opensource.org/licenses/Apache-2.0",
+    "origin": "RobotecAI",
+    "origin_url": "",
+    "type": "Code",
+    "summary": "Extension of the ROS2 gem for warehouse automation",
+    "canonical_tags": [
+        "Gem"
+    ],
+    "user_tags": [
+        "WarehouseAutomation"
+    ],
+    "platforms": [
+        "Linux"
+    ],
+    "icon_path": "preview.png",
+    "dependencies": [
+        "ROS2",
+        "PhysX"
+    ],
+    "repo_uri": "https://github.com/o3de/o3de-extras",
+    "restricted": "WarehouseAutomation"
+}
