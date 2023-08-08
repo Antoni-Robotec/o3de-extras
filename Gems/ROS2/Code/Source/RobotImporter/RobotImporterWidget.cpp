@@ -182,7 +182,7 @@ namespace ROS2
             auto collidersNames = Utils::GetMeshesFilenames(m_parsedUrdf->getRoot(), false, true);
             auto visualNames = Utils::GetMeshesFilenames(m_parsedUrdf->getRoot(), true, false);
 
-            AZStd::string_view dirSuffix = "";
+            AZ::Uuid::FixedString dirSuffix;
             if (!m_params.empty())
             {
                 auto paramsUuid = AZ::Uuid::CreateNull();
@@ -192,7 +192,7 @@ namespace ROS2
                     paramsUuid += AZ::Uuid::CreateName(value);
                 }
 
-                dirSuffix = paramsUuid.ToString<AZStd::string_view>();
+                dirSuffix = paramsUuid.ToFixedString();
             }
 
             if (m_importAssetWithUrdf)
@@ -371,7 +371,12 @@ namespace ROS2
         }
         const bool useArticulation = m_prefabMakerPage->IsUseArticulations();
         m_prefabMaker = AZStd::make_unique<URDFPrefabMaker>(
-            m_urdfPath.String(), m_parsedUrdf, prefabPath.String(), m_urdfAssetsMapping, useArticulation);
+            m_urdfPath.String(),
+            m_parsedUrdf,
+            prefabPath.String(),
+            m_urdfAssetsMapping,
+            useArticulation,
+            m_prefabMakerPage->getSelectedSpawnPoint());
 
         auto prefabOutcome = m_prefabMaker->CreatePrefabFromURDF();
         if (prefabOutcome.IsSuccess())

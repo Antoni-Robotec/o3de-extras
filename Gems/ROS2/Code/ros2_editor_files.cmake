@@ -28,6 +28,8 @@ set(FILES
     Source/RobotImporter/RobotImporterWidget.h
     Source/RobotImporter/ROS2RobotImporterEditorSystemComponent.cpp
     Source/RobotImporter/ROS2RobotImporterEditorSystemComponent.h
+    Source/RobotImporter/SDFormat/ROS2SensorHooks.cpp
+    Source/RobotImporter/SDFormat/ROS2SensorHooks.h
     Source/RobotImporter/URDF/ArticulationsMaker.cpp
     Source/RobotImporter/URDF/ArticulationsMaker.h
     Source/RobotImporter/URDF/CollidersMaker.cpp
@@ -58,4 +60,12 @@ set(FILES
     Source/ROS2EditorSystemComponent.cpp
     Source/ROS2EditorSystemComponent.h
     Source/ROS2GemUtilities.cpp
+    Source/Spawner/ROS2SpawnerEditorComponent.cpp
+    Source/Spawner/ROS2SpawnerEditorComponent.h
+    Source/Spawner/ROS2SpawnPointEditorComponent.cpp
+    Source/Spawner/ROS2SpawnPointEditorComponent.h
+    Source/SdfAssetBuilder/SdfAssetBuilder.cpp
+    Source/SdfAssetBuilder/SdfAssetBuilder.h
+    Source/SdfAssetBuilder/SdfAssetBuilderSystemComponent.cpp
+    Source/SdfAssetBuilder/SdfAssetBuilderSystemComponent.h
 )

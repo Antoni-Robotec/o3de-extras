@@ -27,19 +27,41 @@ set(FILES
         Source/Communication/QoS.cpp
         Source/Communication/PublisherConfiguration.cpp
         Source/Communication/TopicConfiguration.cpp
+        Source/FactorySimulation/ConveyorBeltComponent.cpp
+        Source/FactorySimulation/ConveyorBeltComponent.h
+        Source/FactorySimulation/ConveyorBeltComponentConfiguration.cpp
+        Source/FactorySimulation/ConveyorBeltComponentConfiguration.h
+        Source/ContactSensor/ROS2ContactSensorComponent.cpp
+        Source/ContactSensor/ROS2ContactSensorComponent.h
         Source/Frame/NamespaceConfiguration.cpp
         Source/Frame/ROS2FrameComponent.cpp
         Source/Frame/ROS2Transform.cpp
+        Source/Gripper/GripperActionServer.cpp
+        Source/Gripper/GripperActionServer.h
+        Source/Gripper/GripperActionServerComponent.cpp
+        Source/Gripper/GripperActionServerComponent.h
+        Source/Gripper/VacuumGripperComponent.h
+        Source/Gripper/VacuumGripperComponent.cpp
+        Source/Gripper/FingerGripperComponent.h
+        Source/Gripper/FingerGripperComponent.cpp
         Source/GNSS/GNSSFormatConversions.cpp
         Source/GNSS/GNSSFormatConversions.h
+        Source/GNSS/GNSSSensorConfiguration.cpp
+        Source/GNSS/GNSSSensorConfiguration.h
         Source/GNSS/ROS2GNSSSensorComponent.cpp
         Source/GNSS/ROS2GNSSSensorComponent.h
+        Source/Imu/ImuSensorConfiguration.cpp
+        Source/Imu/ImuSensorConfiguration.h
         Source/Imu/ROS2ImuSensorComponent.cpp
         Source/Imu/ROS2ImuSensorComponent.h
         Source/Lidar/LidarRaycaster.cpp
         Source/Lidar/LidarRaycaster.h
         Source/Lidar/LidarRegistrarSystemComponent.cpp
         Source/Lidar/LidarRegistrarSystemComponent.h
+        Source/Lidar/Lidar2DSensorConfiguration.cpp
+        Source/Lidar/Lidar2DSensorConfiguration.h
+        Source/Lidar/LidarSensorConfiguration.cpp
+        Source/Lidar/LidarSensorConfiguration.h
         Source/Lidar/LidarSystem.cpp
         Source/Lidar/LidarSystem.h
         Source/Lidar/LidarTemplate.cpp
@@ -98,6 +120,14 @@ set(FILES
         Source/Spawner/ROS2SpawnerComponent.h
         Source/Spawner/ROS2SpawnPointComponent.cpp
         Source/Spawner/ROS2SpawnPointComponent.h
+        Source/Spawner/ROS2SpawnerComponentController.cpp
+        Source/Spawner/ROS2SpawnerComponentController.h
+        Source/Spawner/ROS2SpawnPointComponentController.cpp
+        Source/Spawner/ROS2SpawnPointComponentController.h
+        Source/Utilities/ArticulationsUtilities.cpp
+        Source/Utilities/ArticulationsUtilities.h
+        Source/Utilities/JointUtilities.cpp
+        Source/Utilities/JointUtilities.h
         Source/Utilities/Controllers/PidConfiguration.cpp
         Source/Utilities/PhysicsCallbackHandler.cpp
         Source/Utilities/PhysicsCallbackHandler.h
