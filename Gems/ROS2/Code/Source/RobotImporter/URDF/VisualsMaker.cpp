@@ -25,36 +25,40 @@
 
 namespace ROS2
 {
-    VisualsMaker::VisualsMaker() = default;
     VisualsMaker::VisualsMaker(
-        MaterialNameMap materials, const AZStd::shared_ptr<Utils::UrdfAssetMap>& urdfAssetsMapping)
-        : m_materials(AZStd::move(materials))
-        , m_urdfAssetsMapping(urdfAssetsMapping)
+        const std::map<std::string, urdf::MaterialSharedPtr>& materials, const AZStd::shared_ptr<Utils::UrdfAssetMap>& urdfAssetsMapping)
+        : m_urdfAssetsMapping(urdfAssetsMapping)
     {
+        AZStd::ranges::for_each(
+            materials,
+            [&](const auto& p)
+            {
+                m_materials[AZStd::string(p.first.c_str(), p.first.size())] = p.second;
+            });
     }
 
-    AZStd::vector<AZ::EntityId> VisualsMaker::AddVisuals(const sdf::Link* link, AZ::EntityId entityId) const
+    AZStd::vector<AZ::EntityId> VisualsMaker::AddVisuals(urdf::LinkSharedPtr link, AZ::EntityId entityId) const
     {
         AZStd::vector<AZ::EntityId> createdEntities;
 
         const AZStd::string typeString = "visual";
-        if (link->VisualCount() < 1)
-        {
+        if (link->visual_array.size() < 1)
+        { 
             // For zero visuals, element is used
-            auto createdEntity = AddVisual(nullptr, entityId, PrefabMakerUtils::MakeEntityName(link->Name().c_str(), typeString));
+            auto createdEntity = AddVisual(link->visual, entityId, PrefabMakerUtils::MakeEntityName(link->name.c_str(), typeString));
             if (createdEntity.IsValid())
             {
                 createdEntities.emplace_back(createdEntity);
             }
         }
         else
-        {
+        { 
             // For one or more visuals, an array is used
             size_t nameSuffixIndex = 0; // For disambiguation when multiple unnamed visuals are present. The order does not matter here
 
-            for (uint64_t index = 0; index < link->VisualCount(); index++)
+            for (auto visual : link->visual_array)
             {
-                auto createdEntity = AddVisual(link->VisualByIndex(index), entityId, PrefabMakerUtils::MakeEntityName(link->Name().c_str(), typeString, nameSuffixIndex));
+                auto createdEntity = AddVisual(visual, entityId, PrefabMakerUtils::MakeEntityName(link->name.c_str(), typeString, nameSuffixIndex));
                 if (createdEntity.IsValid())
                 {
                     createdEntities.emplace_back(createdEntity);
@@ -65,14 +69,14 @@ namespace ROS2
         return createdEntities;
     }
 
-    AZ::EntityId VisualsMaker::AddVisual(const sdf::Visual* visual, AZ::EntityId entityId, const AZStd::string& generatedName) const
+    AZ::EntityId VisualsMaker::AddVisual(urdf::VisualSharedPtr visual, AZ::EntityId entityId, const AZStd::string& generatedName) const
     {
         if (!visual)
         { // It is ok not to have a visual in a link
             return AZ::EntityId();
         }
 
-        if (!visual->Geom())
+        if (!visual->geometry)
         { // Non-empty visual should have a geometry. Warn if no geometry present
             AZ_Warning("AddVisual", false, "No Geometry for a visual");
             return AZ::EntityId();
@@ -81,12 +85,12 @@ namespace ROS2
         AZ_Trace("AddVisual", "Processing visual for entity id:%s\n", entityId.ToString().c_str());
 
         // Use a name generated from the link unless specific name is defined for this visual
-        AZStd::string subEntityName = visual->Name().empty() ? generatedName.c_str() : visual->Name().c_str();
+        const char* subEntityName = visual->name.empty() ? generatedName.c_str() : visual->name.c_str();
         // Since O3DE does not allow origin for visuals, we need to create a sub-entity and store visual there
-        auto createEntityResult = PrefabMakerUtils::CreateEntity(entityId, subEntityName.c_str());
+        auto createEntityResult = PrefabMakerUtils::CreateEntity(entityId, subEntityName);
         if (!createEntityResult.IsSuccess())
         {
-            AZ_Error("AddVisual", false, "Unable to create a sub-entity for visual element %s\n", subEntityName.c_str());
+            AZ_Error("AddVisual", false, "Unable to create a sub-entity for visual element %s\n", subEntityName);
             return AZ::EntityId();
         }
         auto visualEntityId = createEntityResult.GetValue();
@@ -95,49 +99,49 @@ namespace ROS2
         return visualEntityId;
     }
 
-    void VisualsMaker::AddVisualToEntity(const sdf::Visual* visual, AZ::EntityId entityId) const
+    void VisualsMaker::AddVisualToEntity(urdf::VisualSharedPtr visual, AZ::EntityId entityId) const
     {
         // Apply transform as per origin
-        PrefabMakerUtils::SetEntityTransformLocal(visual->RawPose(), entityId);
+        PrefabMakerUtils::SetEntityTransformLocal(visual->origin, entityId);
 
         AZ::Entity* entity = AzToolsFramework::GetEntityById(entityId);
-        auto geometry = visual->Geom();
-        switch (geometry->Type())
+        auto geometry = visual->geometry;
+        switch (geometry->type)
         {
-        case sdf::GeometryType::SPHERE:
+        case urdf::Geometry::SPHERE:
             {
-                auto sphereGeometry = geometry->SphereShape();
+                auto sphereGeometry = std::dynamic_pointer_cast<urdf::Sphere>(geometry);
                 AZ_Assert(sphereGeometry, "geometry is not Sphere");
                 entity->CreateComponent(LmbrCentral::EditorSphereShapeComponentTypeId);
                 entity->Activate();
                 LmbrCentral::SphereShapeComponentRequestsBus::Event(
-                    entityId, &LmbrCentral::SphereShapeComponentRequests::SetRadius, sphereGeometry->Radius());
+                    entityId, &LmbrCentral::SphereShapeComponentRequests::SetRadius, sphereGeometry->radius);
                 LmbrCentral::EditorShapeComponentRequestsBus::Event(
                     entityId, &LmbrCentral::EditorShapeComponentRequests::SetVisibleInGame, true);
                 entity->Deactivate();
             }
             break;
-        case sdf::GeometryType::CYLINDER:
+        case urdf::Geometry::CYLINDER:
             {
-                auto cylinderGeometry = geometry->CylinderShape();
+                auto cylinderGeometry = std::dynamic_pointer_cast<urdf::Cylinder>(geometry);
                 AZ_Assert(cylinderGeometry, "geometry is not Cylinder");
                 entity->CreateComponent(LmbrCentral::EditorCylinderShapeComponentTypeId);
                 entity->Activate();
                 LmbrCentral::CylinderShapeComponentRequestsBus::Event(
-                    entityId, &LmbrCentral::CylinderShapeComponentRequests::SetRadius, cylinderGeometry->Radius());
+                    entityId, &LmbrCentral::CylinderShapeComponentRequests::SetRadius, cylinderGeometry->radius);
                 LmbrCentral::CylinderShapeComponentRequestsBus::Event(
-                    entityId, &LmbrCentral::CylinderShapeComponentRequests::SetHeight, cylinderGeometry->Length());
+                    entityId, &LmbrCentral::CylinderShapeComponentRequests::SetHeight, cylinderGeometry->length);
                 LmbrCentral::EditorShapeComponentRequestsBus::Event(
                     entityId, &LmbrCentral::EditorShapeComponentRequests::SetVisibleInGame, true);
                 entity->Deactivate();
             }
             break;
-        case sdf::GeometryType::BOX:
+        case urdf::Geometry::BOX:
             {
-                auto boxGeometry = geometry->BoxShape();
+                auto boxGeometry = std::dynamic_pointer_cast<urdf::Box>(geometry);
                 AZ_Assert(boxGeometry, "geometry is not Box");
                 entity->CreateComponent(LmbrCentral::EditorBoxShapeComponentTypeId);
-                AZ::Vector3 boxDimensions = URDF::TypeConversions::ConvertVector3(boxGeometry->Size());
+                AZ::Vector3 boxDimensions = URDF::TypeConversions::ConvertVector3(boxGeometry->dim);
                 entity->Activate();
                 LmbrCentral::BoxShapeComponentRequestsBus::Event(
                     entityId, &LmbrCentral::BoxShapeComponentRequests::SetBoxDimensions, boxDimensions);
@@ -146,19 +150,19 @@ namespace ROS2
                 entity->Deactivate();
             }
             break;
-        case sdf::GeometryType::MESH:
+        case urdf::Geometry::MESH:
             {
-                auto meshGeometry = geometry->MeshShape();
+                auto meshGeometry = std::dynamic_pointer_cast<urdf::Mesh>(geometry);
                 AZ_Assert(meshGeometry, "geometry is not Mesh");
 
-                const auto asset = PrefabMakerUtils::GetAssetFromPath(*m_urdfAssetsMapping, AZStd::string(meshGeometry->Uri().c_str()));
+                const auto asset = PrefabMakerUtils::GetAssetFromPath(*m_urdfAssetsMapping, meshGeometry->filename);
 
                 if (asset)
                 {
                     auto editorMeshComponent = entity->CreateComponent(AZ::Render::EditorMeshComponentTypeId);
 
                     // Prepare scale
-                    AZ::Vector3 scaleVector = URDF::TypeConversions::ConvertVector3(meshGeometry->Scale());
+                    AZ::Vector3 scaleVector = URDF::TypeConversions::ConvertVector3(meshGeometry->scale);
                     bool isUniformScale =
                         AZ::IsClose(scaleVector.GetMaxElement(), scaleVector.GetMinElement(), AZ::Constants::FloatEpsilon);
                     if (!isUniformScale)
@@ -196,15 +200,15 @@ namespace ROS2
             }
             break;
         default:
-            AZ_Warning("AddVisual", false, "Unsupported visual geometry type, %d", (int)geometry->Type());
+            AZ_Warning("AddVisual", false, "Unsupported visual geometry type, %d", geometry->type);
             return;
         }
     }
 
-    void VisualsMaker::AddMaterialForVisual(const sdf::Visual* visual, AZ::EntityId entityId) const
+    void VisualsMaker::AddMaterialForVisual(urdf::VisualSharedPtr visual, AZ::EntityId entityId) const
     {
         // URDF does not include information from <gazebo> tags with specific materials, diffuse, specular and emissive params
-        if (!visual->Material() || !visual->Geom())
+        if (!visual->material || !visual->geometry)
         {
             // Material is optional, and it requires geometry
             return;
@@ -212,16 +216,13 @@ namespace ROS2
 
         AZ::Entity* entity = AzToolsFramework::GetEntityById(entityId);
 
-        // As a Material doesn't have a name and there can only be 1 material per <visual> tag,
-        // the Visual Name is used for the material
-        const std::string materialName{ visual->Name() };
-        const AZStd::string azMaterialName{ materialName.c_str(), materialName.size() };
+        const AZStd::string material_name{ visual->material->name.c_str() };
 
         // If present in map, take map color definition as priority, otherwise apply local node definition
-        const auto materialColorUrdf = m_materials.contains(azMaterialName) ? m_materials.at(azMaterialName)->Diffuse() : visual->Material()->Diffuse();
+        const auto materialColorUrdf = m_materials.contains(material_name) ? m_materials.at(material_name)->color : visual->material->color;
 
         const AZ::Color materialColor = URDF::TypeConversions::ConvertColor(materialColorUrdf);
-        bool isPrimitive = visual->Geom()->Type() != sdf::GeometryType::MESH;
+        bool isPrimitive = visual->geometry->type != urdf::Geometry::MESH;
         if (isPrimitive)
         { // For primitives, set the color in the shape component
             entity->Activate();
@@ -232,7 +233,7 @@ namespace ROS2
         }
 
         entity->CreateComponent(AZ::Render::EditorMaterialComponentTypeId);
-        AZ_Printf("AddVisual", "Setting color for material %s\n", azMaterialName.c_str());
+        AZ_Printf("AddVisual", "Setting color for material %s\n", visual->material->name.c_str());
         entity->Activate();
         AZ::Render::MaterialComponentRequestBus::Event(
             entityId,

@@ -63,13 +63,6 @@ namespace ROS2
         return ROS2Names::GetNamespacedName(parentNamespace, m_namespace);
     }
 
-    void NamespaceConfiguration::SetNamespace(const AZStd::string& ns, NamespaceStrategy strategy)
-    {
-        m_namespace = ns;
-        m_namespaceStrategy = strategy;
-        UpdateNamespace();
-    }
-
     bool NamespaceConfiguration::IsNamespaceCustom() const
     {
         return m_namespaceStrategy == NamespaceConfiguration::NamespaceStrategy::Custom;

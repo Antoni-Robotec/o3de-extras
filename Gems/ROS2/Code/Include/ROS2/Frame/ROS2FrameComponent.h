@@ -74,11 +74,6 @@ namespace ROS2
         //! @return The name of the global frame with namespace attached. It is typically "odom", "map", "world".
         AZStd::string GetGlobalFrameName() const;
 
-        //! Updates the namespace and namespace strategy of the underlying namespace configuration
-        //! @param ns Namespace to set.
-        //! @param strategy Namespace strategy to use.
-        void UpdateNamespaceConfiguration(const AZStd::string& ns, NamespaceConfiguration::NamespaceStrategy strategy);
-
     private:
         //////////////////////////////////////////////////////////////////////////
         // AZ::TickBus::Handler overrides

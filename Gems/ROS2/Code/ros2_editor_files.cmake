@@ -49,8 +49,6 @@ set(FILES
     Source/RobotImporter/xacro/XacroUtils.cpp
     Source/RobotImporter/xacro/XacroUtils.h
     Source/RobotImporter/Utils/DefaultSolverConfiguration.h
-    Source/RobotImporter/Utils/ErrorUtils.cpp
-    Source/RobotImporter/Utils/ErrorUtils.h
     Source/RobotImporter/Utils/FilePath.cpp
     Source/RobotImporter/Utils/FilePath.h
     Source/RobotImporter/Utils/RobotImporterUtils.cpp

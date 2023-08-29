@@ -66,8 +66,7 @@ namespace ROS2
             AzFramework::EntitySpawnTicket::Id,
             AzFramework::SpawnableEntityContainerView,
             const AZ::Transform&,
-            const AZStd::string& spawnableName,
-            const AZStd::string& spawnableNamespace);
+            const AZStd::string& spawnableName);
 
         void GetSpawnPointsNames(const GetSpawnPointsNamesRequest request, GetSpawnPointsNamesResponse response);
         void GetSpawnPointInfo(const GetSpawnPointInfoRequest request, GetSpawnPointInfoResponse response);

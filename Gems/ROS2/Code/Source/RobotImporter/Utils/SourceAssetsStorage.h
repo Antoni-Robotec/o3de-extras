@@ -13,7 +13,6 @@
 #include <AzCore/Asset/AssetManager.h>
 #include <AzCore/Asset/AssetManagerBus.h>
 #include <AzCore/IO/FileIO.h>
-#include <AzCore/IO/Path/Path.h>
 #include <AzCore/Math/Crc.h>
 #include <AzCore/std/containers/unordered_map.h>
 #include <AzCore/std/containers/unordered_set.h>
@@ -26,13 +25,13 @@ namespace ROS2::Utils
     struct AvailableAsset
     {
         //! Relative path to source asset eg `Assets/foo_robot/meshes/bar_link.dae`.
-        AZ::IO::Path m_sourceAssetRelativePath;
+        AZStd::string m_sourceAssetRelativePath;
 
         //! Relative path to source asset eg `/home/user/project/Assets/foo_robot/meshes/bar_link.dae`.
-        AZ::IO::Path m_sourceAssetGlobalPath;
+        AZStd::string m_sourceAssetGlobalPath;
 
         //! Relative path to source asset eg `foo_robot/meshes/bar_link.azmodel`.
-        AZ::IO::Path m_productAssetRelativePath;
+        AZStd::string m_productAssetRelativePath;
 
         //! Source GUID of source asset
         AZ::Uuid m_sourceGuid = AZ::Uuid::CreateNull();
@@ -42,10 +41,10 @@ namespace ROS2::Utils
     struct UrdfAsset
     {
         //! Unresolved URDF path to mesh, eg `package://meshes/bar_link.dae`.
-        AZ::IO::Path m_urdfPath;
+        AZStd::string m_urdfPath;
 
         //! Resolved URDF path, points to the valid mesh in the filestystem, eg `/home/user/ros_ws/src/foo_robot/meshes/bar_link.dae'
-        AZ::IO::Path m_resolvedUrdfPath;
+        AZStd::string m_resolvedUrdfPath;
 
         //! Checksum of the file located pointed by `m_resolvedUrdfPath`.
         AZ::Crc32 m_urdfFileCRC;
@@ -55,10 +54,10 @@ namespace ROS2::Utils
     };
 
     /// Type that hold result of mapping from URDF path to asset info
-    using UrdfAssetMap = AZStd::unordered_map<AZ::IO::Path, Utils::UrdfAsset>;
+    using UrdfAssetMap = AZStd::unordered_map<AZStd::string, Utils::UrdfAsset>;
 
     //! Function computes CRC32 on first kilobyte of file.
-    AZ::Crc32 GetFileCRC(const AZ::IO::Path& filename);
+    AZ::Crc32 GetFileCRC(const AZStd::string& filename);
 
     //! Compute CRC for every source mesh from the assets catalog.
     //! @returns map where key is crc of source file and value is AvailableAsset.
@@ -114,7 +113,7 @@ namespace ROS2::Utils
     //! @param collider - create assetinfo section for collider product asset
     //! @param visual - create assetinfo section for visual mesh
     //! @returns true if succeed
-    bool CreateSceneManifest(const AZ::IO::Path& sourceAssetPath, bool collider, bool visual);
+    bool CreateSceneManifest(const AZStd::string& sourceAssetPath, bool collider, bool visual);
 
     //! Creates side-car file (.assetinfo) that configures the imported scene (eg DAE file).
     //! @param sourceAssetPath - global path to source asset
@@ -122,7 +121,7 @@ namespace ROS2::Utils
     //! @param collider - create assetinfo section for collider product asset
     //! @param visual - create assetinfo section for visual mesh
     //! @returns true if succeed
-    bool CreateSceneManifest(const AZ::IO::Path& sourceAssetPath, const AZ::IO::Path& assetInfoFile, bool collider, bool visual);
+    bool CreateSceneManifest(const AZStd::string& sourceAssetPath, const AZStd::string& assetInfoFile, bool collider, bool visual);
 
     //! A function that copies and prepares meshes that are referenced in URDF.
     //! It resolves every mesh, creates a directory in Project's Asset directory, copies files, and prepares assets info.

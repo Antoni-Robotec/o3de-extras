@@ -5,22 +5,36 @@
  * SPDX-License-Identifier: Apache-2.0 OR MIT
  *
  */
-#include <ROS2/Utilities/PhysicsCallbackHandler.h>
+#include "PhysicsCallbackHandler.h"
+#include "AzFramework/Physics/RigidBodyBus.h"
+#include "AzFramework/Physics/SimulatedBodies/RigidBody.h"
 
 namespace ROS2::Utils
 {
-    void PhysicsCallbackHandler::InstallPhysicalCallback()
+    void PhysicsCallbackHandler::InstallPhysicalCallback(AZ::EntityId entityId)
     {
+        m_bodyHandle = AzPhysics::InvalidSimulatedBodyHandle;
         m_onSceneSimulationStart = AzPhysics::SceneEvents::OnSceneSimulationStartHandler(
-            [this](AzPhysics::SceneHandle sceneHandle, float deltaTime)
+            [this, entityId](AzPhysics::SceneHandle sceneHandle, float deltaTime)
             {
-                OnPhysicsInitialization(sceneHandle);
-                m_onSceneSimulationStart.Disconnect();
+                AzPhysics::RigidBody* rigidBody = nullptr;
+                Physics::RigidBodyRequestBus::EventResult(rigidBody, entityId, &Physics::RigidBodyRequests::GetRigidBody);
+                AZ_Assert(rigidBody, "Entity %s does not have rigid body.", entityId.ToString().c_str());
+                if (rigidBody)
+                {
+                    m_bodyHandle = rigidBody->m_bodyHandle;
+                    OnPhysicsInitialization(sceneHandle);
+                    m_onSceneSimulationStart.Disconnect();
+                }
             });
 
         m_onSceneSimulationEvent = AzPhysics::SceneEvents::OnSceneSimulationFinishHandler(
             [this](AzPhysics::SceneHandle sceneHandle, float deltaTime)
             {
+                if (m_bodyHandle == AzPhysics::InvalidSimulatedBodyHandle)
+                {
+                    return;
+                }
                 OnPhysicsSimulationFinished(sceneHandle, deltaTime);
             });
 

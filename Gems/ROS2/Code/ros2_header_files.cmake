@@ -24,8 +24,6 @@ set(FILES
         Include/ROS2/Manipulation/MotorizedJoints/ManualMotorControllerComponent.h
         Include/ROS2/Manipulation/MotorizedJoints/PidMotorControllerBus.h
         Include/ROS2/Manipulation/MotorizedJoints/PidMotorControllerComponent.h
-        Include/ROS2/ProximitySensor/ProximitySensorNotificationBus.h
-        Include/ROS2/ProximitySensor/ProximitySensorNotificationBusHandler.h
         Include/ROS2/RobotControl/ControlConfiguration.h
         Include/ROS2/RobotControl/ControlSubscriptionHandler.h
         Include/ROS2/RobotImporter/SDFormatSensorImporterHook.h
@@ -38,7 +36,6 @@ set(FILES
         Include/ROS2/Sensor/SensorConfiguration.h
         Include/ROS2/Spawner/SpawnerBus.h
         Include/ROS2/Utilities/Controllers/PidConfiguration.h
-        Include/ROS2/Utilities/PhysicsCallbackHandler.h
         Include/ROS2/Utilities/ROS2Conversions.h
         Include/ROS2/Utilities/ROS2Names.h
         Include/ROS2/VehicleDynamics/VehicleInputControlBus.h

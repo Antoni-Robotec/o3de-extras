@@ -73,23 +73,13 @@ namespace ROS2
 
     void ROS2ImuSensorComponent::GetRequiredServices(AZ::ComponentDescriptor::DependencyArrayType& required)
     {
-        required.push_back(AZ_CRC_CE("PhysicsDynamicRigidBodyService"));
+        required.push_back(AZ_CRC_CE("PhysicsRigidBodyService"));
         required.push_back(AZ_CRC_CE("ROS2Frame"));
     }
 
     void ROS2ImuSensorComponent::SetupRefreshLoop()
     {
-        InstallPhysicalCallback();
-    }
-
-    void ROS2ImuSensorComponent::OnPhysicsInitialization(AzPhysics::SceneHandle sceneHandle)
-    {
-        AzPhysics::RigidBody* rigidBody = nullptr;
-        AZ::EntityId entityId = GetEntityId();
-        Physics::RigidBodyRequestBus::EventResult(rigidBody, entityId, &Physics::RigidBodyRequests::GetRigidBody);
-        AZ_Assert(rigidBody, "Entity %s does not have rigid body.", entityId.ToString().c_str());
-
-        m_bodyHandle = rigidBody->m_bodyHandle;
+        InstallPhysicalCallback(m_entity->GetId());
     }
 
     void ROS2ImuSensorComponent::OnPhysicsSimulationFinished(AzPhysics::SceneHandle sceneHandle, float deltaTime)

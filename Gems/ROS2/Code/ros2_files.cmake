@@ -27,10 +27,6 @@ set(FILES
         Source/Communication/QoS.cpp
         Source/Communication/PublisherConfiguration.cpp
         Source/Communication/TopicConfiguration.cpp
-        Source/FactorySimulation/ConveyorBeltComponent.cpp
-        Source/FactorySimulation/ConveyorBeltComponent.h
-        Source/FactorySimulation/ConveyorBeltComponentConfiguration.cpp
-        Source/FactorySimulation/ConveyorBeltComponentConfiguration.h
         Source/ContactSensor/ROS2ContactSensorComponent.cpp
         Source/ContactSensor/ROS2ContactSensorComponent.h
         Source/Frame/NamespaceConfiguration.cpp
@@ -85,8 +81,6 @@ set(FILES
         Source/Manipulation/JointsTrajectoryComponent.h
         Source/Manipulation/FollowJointTrajectoryActionServer.cpp
         Source/Manipulation/FollowJointTrajectoryActionServer.h
-        Source/Manipulation/ManipulationUtils.h
-        Source/Manipulation/ManipulationUtils.cpp
         Source/Manipulation/MotorizedJoints/JointMotorControllerComponent.cpp
         Source/Manipulation/MotorizedJoints/JointMotorControllerConfiguration.cpp
         Source/Manipulation/MotorizedJoints/ManualMotorControllerComponent.cpp
@@ -97,8 +91,6 @@ set(FILES
         Source/Odometry/ROS2WheelOdometry.h
         Source/Odometry/ROS2OdometryCovariance.cpp
         Source/Odometry/ROS2OdometryCovariance.h
-        Source/ProximitySensor/ROS2ProximitySensor.cpp
-        Source/ProximitySensor/ROS2ProximitySensor.h
         Source/RobotControl/Ackermann/AckermannSubscriptionHandler.cpp
         Source/RobotControl/Ackermann/AckermannSubscriptionHandler.h
         Source/RobotControl/ControlConfiguration.cpp
@@ -118,10 +110,6 @@ set(FILES
         Source/ROS2SystemComponent.h
         Source/Sensor/ROS2SensorComponent.cpp
         Source/Sensor/SensorConfiguration.cpp
-        Source/SimulationUtils/FollowingCameraConfiguration.cpp
-        Source/SimulationUtils/FollowingCameraConfiguration.h
-        Source/SimulationUtils/FollowingCameraComponent.cpp
-        Source/SimulationUtils/FollowingCameraComponent.h
         Source/Spawner/ROS2SpawnerComponent.cpp
         Source/Spawner/ROS2SpawnerComponent.h
         Source/Spawner/ROS2SpawnPointComponent.cpp
@@ -136,6 +124,7 @@ set(FILES
         Source/Utilities/JointUtilities.h
         Source/Utilities/Controllers/PidConfiguration.cpp
         Source/Utilities/PhysicsCallbackHandler.cpp
+        Source/Utilities/PhysicsCallbackHandler.h
         Source/Utilities/ROS2Conversions.cpp
         Source/Utilities/ROS2Names.cpp
         Source/VehicleDynamics/AxleConfiguration.cpp

@@ -12,8 +12,7 @@
                     "world",
                     "xacro"
                 ],
-                "UseArticulations": true,
-                "URDFPreserveFixedJoint": true
+                "UseArticulations": true
             }
         }
     }

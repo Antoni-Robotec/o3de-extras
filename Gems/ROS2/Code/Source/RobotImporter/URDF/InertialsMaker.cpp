@@ -15,8 +15,12 @@
 
 namespace ROS2
 {
-    void InertialsMaker::AddInertial(const gz::math::Inertiald& inertial, AZ::EntityId entityId) const
+    void InertialsMaker::AddInertial(urdf::InertialSharedPtr inertial, AZ::EntityId entityId) const
     {
+        if (!inertial)
+        { // it is ok not to have inertia in a link
+            return;
+        }
         AZ_Trace("AddInertial", "Processing inertial for entity id: %s\n", entityId.ToString().c_str());
 
         AZ::Entity* entity = AzToolsFramework::GetEntityById(entityId);
@@ -27,24 +31,22 @@ namespace ROS2
         physxSpecificConfiguration.m_solverVelocityIterations =
             AZStd::max(physxSpecificConfiguration.m_solverVelocityIterations, URDF::DefaultNumberVelSolver);
 
-        rigidBodyConfiguration.m_mass = inertial.MassMatrix().Mass();
+        rigidBodyConfiguration.m_mass = inertial->mass;
         rigidBodyConfiguration.m_computeMass = false;
 
-        rigidBodyConfiguration.m_centerOfMassOffset = URDF::TypeConversions::ConvertVector3(inertial.Pose().Pos());
+        rigidBodyConfiguration.m_centerOfMassOffset = URDF::TypeConversions::ConvertVector3(inertial->origin.position);
         rigidBodyConfiguration.m_computeCenterOfMass = false;
 
-        if (!URDF::TypeConversions::ConvertQuaternion(inertial.Pose().Rot()).IsIdentity())
+        if (!URDF::TypeConversions::ConvertQuaternion(inertial->origin.rotation).IsIdentity())
         { // There is a rotation component in URDF that we are not able to apply
             AZ_Warning("AddInertial", false, "Ignoring URDF inertial origin rotation (no such field in rigid body configuration)");
         }
 
-        auto moi = inertial.Moi();
-
         // Inertia tensor is symmetrical
         auto inertiaMatrix = AZ::Matrix3x3::CreateFromRows(
-            AZ::Vector3(moi(0, 0), moi(0, 1), moi(0, 2)),
-            AZ::Vector3(moi(0, 1), moi(1, 1), moi(1, 2)),
-            AZ::Vector3(moi(0, 2), moi(1, 2), moi(2, 2)));
+            AZ::Vector3(inertial->ixx, inertial->ixy, inertial->ixz),
+            AZ::Vector3(inertial->ixy, inertial->iyy, inertial->iyz),
+            AZ::Vector3(inertial->ixz, inertial->iyz, inertial->izz));
         rigidBodyConfiguration.m_inertiaTensor = inertiaMatrix;
         rigidBodyConfiguration.m_computeInertiaTensor = false;
 

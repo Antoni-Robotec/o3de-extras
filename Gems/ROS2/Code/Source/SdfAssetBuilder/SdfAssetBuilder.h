@@ -17,8 +17,6 @@
 
 namespace ROS2
 {
-    [[maybe_unused]] constexpr const char* SdfAssetBuilderName = "SdfAssetBuilder";
-
     //! Builder to convert the following file types into procedural prefab assets:
     //! * sdf (Simulation Description Format: http://sdformat.org/ )
     //! * urdf (Unified Robotics Description Format: http://wiki.ros.org/urdf )
@@ -43,7 +41,7 @@ namespace ROS2
         AZStd::string GetFingerprint() const;
 
         //! Create a mapping of all the asset references in the source file.
-        Utils::UrdfAssetMap FindAssets(const sdf::Root& root, const AZStd::string& sourceFilename) const;
+        Utils::UrdfAssetMap FindAssets(const urdf::LinkConstSharedPtr& rootLink, const AZStd::string& sourceFilename) const;
 
         SdfAssetBuilderSettings m_globalSettings;
         AZStd::string m_fingerprint;
